@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:random_string/random_string.dart';
 
-class Employee extends StatefulWidget {
-  const Employee({super.key});
+class Product extends StatefulWidget {
+  const Product({super.key});
 
   @override
-  State<Employee> createState() => _EmployeeState();
+  State<Product> createState() => _ProductState();
 }
 
-class _EmployeeState extends State<Employee> {
+class _ProductState extends State<Product> {
   TextEditingController namecontroller = new TextEditingController();
-  TextEditingController agecontroller = new TextEditingController();
-  TextEditingController locationcontroller = new TextEditingController();
+  TextEditingController producttypecontroller = new TextEditingController();
+  TextEditingController pricecontroller = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +24,17 @@ class _EmployeeState extends State<Employee> {
           // căn chỉnh tiêu đề ở giữa
           children: [
             Text(
-              "Employee",
+              "Thêm",
               style: TextStyle(
-                color: Colors.blue,
+                color: Colors.black,
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              " Form",
+              " món ăn",
               style: TextStyle(
-                color: Colors.red,
+                color: Colors.black,
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
               ),
@@ -73,7 +73,7 @@ class _EmployeeState extends State<Employee> {
 
             SizedBox(height: 20.0),
             Text(
-              "Age",
+              "Type",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 24.0,
@@ -89,7 +89,7 @@ class _EmployeeState extends State<Employee> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
-                controller: agecontroller,
+                controller: producttypecontroller,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                 ), // mat cai duong vien
@@ -98,7 +98,7 @@ class _EmployeeState extends State<Employee> {
 
             SizedBox(height: 20.0),
             Text(
-              "Location",
+              "Price",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 24.0,
@@ -114,7 +114,7 @@ class _EmployeeState extends State<Employee> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
-                controller: locationcontroller,
+                controller: pricecontroller,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                 ), // mat cai duong vien
@@ -125,23 +125,23 @@ class _EmployeeState extends State<Employee> {
               child: ElevatedButton(
                 onPressed: () async {
                   String Id = randomAlphaNumeric(10);
-                  Map<String, dynamic> employeeInfoMap = {
+                  Map<String, dynamic> productInfoMap = {
                     "Id" : Id,
                     "Name": namecontroller.text,
-                    "Age": agecontroller.text,
-                    "Location": locationcontroller.text,
+                    "Type": producttypecontroller.text,
+                    "Price": pricecontroller.text,
                   };
-await DatabaseMethods().addEmployeeDetails(employeeInfoMap, Id).then((value) {
-  Fluttertoast.showToast(
-      msg: "Đã tải thành công nhen...",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
-      fontSize: 16.0
-  );
-});
+                  await DatabaseMethods().addProductDetails(productInfoMap, Id).then((value) {
+                    Fluttertoast.showToast(
+                        msg: "Đã tải thành công nhen...",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
+                  });
                 },
                 child: Text(
                   "Add",

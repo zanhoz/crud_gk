@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:crud_gk/pages/employee.dart';
+import 'package:crud_gk/pages/product.dart';
 import 'package:crud_gk/service/database.dart';
 import 'package:flutter/material.dart';
 
@@ -12,12 +12,12 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   TextEditingController namecontroller = new TextEditingController();
-  TextEditingController agecontroller = new TextEditingController();
-  TextEditingController locationcontroller = new TextEditingController();
-  Stream? EmployeeStream;
+  TextEditingController producttypecontroller = new TextEditingController();
+  TextEditingController pricecontroller = new TextEditingController();
+  Stream? ProductStream;
 
   getontheload() async{
-    EmployeeStream = await DatabaseMethods().getEmployeeDetails();
+    ProductStream = await DatabaseMethods().getProductDetails();
     setState(() {
 
     });
@@ -28,82 +28,82 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-  Widget allEmployeeDetails() {
+  Widget allProductDetails() {
     return StreamBuilder(
-      stream: EmployeeStream,
+      stream: ProductStream,
       builder: (context, AsyncSnapshot snapshot) {
         return snapshot.hasData
             ? ListView.builder(
-              itemCount: snapshot.data.docs.length,
-              itemBuilder: (context, index) {
-                DocumentSnapshot ds = snapshot.data.docs[index];
-                return Container(
-                  margin: EdgeInsets.only(bottom: 20.0),
-                  child: Material(
-                    elevation: 5.0,
+          itemCount: snapshot.data.docs.length,
+          itemBuilder: (context, index) {
+            DocumentSnapshot ds = snapshot.data.docs[index];
+            return Container(
+              margin: EdgeInsets.only(bottom: 20.0),
+              child: Material(
+                elevation: 5.0,
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
-                    child: Container(
-                      padding: EdgeInsets.all(20),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+
                         children: [
-                          Row(
-
-                            children: [
-                              Text(
-                                "Name: " +ds["Name"],
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Spacer(),
-                              GestureDetector(
-                                  onTap: (){
-                                    namecontroller.text=ds["Name"];
-                                    agecontroller.text = ds["Age"];
-                                    locationcontroller.text= ds["Location"];
-                                    EditEmployeeDetail(ds["Id"]);
-                                  },
-                                  child: Icon(Icons.edit, color: Colors.red,)),
-                                  SizedBox(width: 5.0,),
-                                  GestureDetector(
-                                    onTap: () async{
-                                      await DatabaseMethods().deleteEmployeeDetail(ds["Id"]);
-
-                                    },
-                                      child: Icon(Icons.delete, color: Colors.red,))
-                            ],
-                          ),
                           Text(
-                            "Age: "+ds["Age"],
-                            style: TextStyle(
-                              color: Colors.yellow,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            "Location: "+ds["Location"],
+                            "Name: " +ds["Name"],
                             style: TextStyle(
                               color: Colors.blue,
                               fontSize: 20.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          Spacer(),
+                          GestureDetector(
+                              onTap: (){
+                                namecontroller.text=ds["Name"];
+                                producttypecontroller.text = ds["Type"];
+                                pricecontroller.text= ds["Price"];
+                                EditProductDetail(ds["Id"]);
+                              },
+                              child: Icon(Icons.edit, color: Colors.red,)),
+                          SizedBox(width: 5.0,),
+                          GestureDetector(
+                              onTap: () async{
+                                await DatabaseMethods().deleteProductDetails(ds["Id"]);
+
+                              },
+                              child: Icon(Icons.delete, color: Colors.red,))
                         ],
                       ),
-                    ),
+                      Text(
+                        "Type: "+ds["Type"],
+                        style: TextStyle(
+                          color: Colors.yellow,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "Price: "+ds["Price"],
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-            )
+                ),
+              ),
+            );
+          },
+        )
             : Container();
       },
     );
@@ -116,7 +116,7 @@ class _HomeState extends State<Home> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Employee()),
+            MaterialPageRoute(builder: (context) => Product()),
           ); // bam vao + de qua trang moi
         },
         child: Icon(Icons.add),
@@ -150,41 +150,41 @@ class _HomeState extends State<Home> {
         margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0),
         child: Column(
           children: [
-           Expanded(child: allEmployeeDetails()),
+            Expanded(child: allProductDetails()),
           ],
         ),
       ),
     );
   }
-  Future EditEmployeeDetail(String id) => showDialog(context: context, builder: (context)=> AlertDialog(
+  Future EditProductDetail(String id) => showDialog(context: context, builder: (context)=> AlertDialog(
     content: Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-           Row(children: [
-             GestureDetector(
-               onTap: () {
-                 Navigator.pop(context);
-               },
-                 child: Icon(Icons.cancel)),
-             SizedBox(width: 60.0,),
-             Text(
-               "Edit ",
-               style: TextStyle(
-                 color: Colors.blue,
-                 fontSize: 24.0,
-                 fontWeight: FontWeight.bold,
-               ),
-             ),
-             Text(
-               " detail",
-               style: TextStyle(
-                 color: Colors.red,
-                 fontSize: 20.0,
-                 fontWeight: FontWeight.bold,
-               ),
-             ),
-           ],),
+          Row(children: [
+            GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Icon(Icons.cancel)),
+            SizedBox(width: 60.0,),
+            Text(
+              "Sửa",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              " món",
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],),
           SizedBox(height: 20.0,),
           Text(
             "Name",
@@ -212,7 +212,7 @@ class _HomeState extends State<Home> {
 
           SizedBox(height: 20.0),
           Text(
-            "Age",
+            "Type",
             style: TextStyle(
               color: Colors.black,
               fontSize: 20.0,
@@ -228,7 +228,7 @@ class _HomeState extends State<Home> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: TextField(
-              controller: agecontroller,
+              controller: producttypecontroller,
               decoration: InputDecoration(
                 border: InputBorder.none,
               ), // mat cai duong vien
@@ -237,7 +237,7 @@ class _HomeState extends State<Home> {
 
           SizedBox(height: 20.0),
           Text(
-            "Location",
+            "Price",
             style: TextStyle(
               color: Colors.black,
               fontSize: 20.0,
@@ -253,7 +253,7 @@ class _HomeState extends State<Home> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: TextField(
-              controller: locationcontroller,
+              controller: pricecontroller,
               decoration: InputDecoration(
                 border: InputBorder.none,
               ), // mat cai duong vien
@@ -264,10 +264,10 @@ class _HomeState extends State<Home> {
             Map<String, dynamic>updateInfo= {
               "Id": id,
               "Name": namecontroller.text,
-              "Age" : agecontroller.text,
-              "Location" : locationcontroller.text,
+              "Type" : producttypecontroller.text,
+              "Price" : pricecontroller.text,
             };
-            await DatabaseMethods().updateEmployeeDetail(id, updateInfo).then((value){
+            await DatabaseMethods().updateProductDetails(id, updateInfo).then((value){
               Navigator.pop(context);
             });
 
