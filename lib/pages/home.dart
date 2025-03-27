@@ -17,7 +17,7 @@ class _HomeState extends State<Home> {
   Stream? ProductStream;
 
   getontheload() async{
-    ProductStream = await DatabaseMethods().getProductDetails();
+    ProductStream = await DatabaseMethods().getProductDetails(); // lấy dữ liệu từ firestore
     setState(() {
 
     });
@@ -33,7 +33,7 @@ class _HomeState extends State<Home> {
       stream: ProductStream,
       builder: (context, AsyncSnapshot snapshot) {
         return snapshot.hasData
-            ? ListView.builder(
+            ? ListView.builder( // hiển thị danh sách sản phẩm
           itemCount: snapshot.data.docs.length,
           itemBuilder: (context, index) {
             DocumentSnapshot ds = snapshot.data.docs[index];
@@ -64,7 +64,7 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                           Spacer(),
-                          GestureDetector(
+                          GestureDetector( // xử lí nút Edit
                               onTap: (){
                                 namecontroller.text=ds["Name"];
                                 producttypecontroller.text = ds["Type"];
@@ -73,6 +73,7 @@ class _HomeState extends State<Home> {
                               },
                               child: Icon(Icons.edit, color: Colors.red,)),
                           SizedBox(width: 5.0,),
+                          // Xóa sản phẩm
                           GestureDetector(
                               onTap: () async{
                                 await DatabaseMethods().deleteProductDetails(ds["Id"]);
@@ -156,7 +157,7 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-  Future EditProductDetail(String id) => showDialog(context: context, builder: (context)=> AlertDialog(
+  Future EditProductDetail(String id) => showDialog(context: context, builder: (context)=> AlertDialog( // hiển thị hộp thoại để sửa
     content: Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
